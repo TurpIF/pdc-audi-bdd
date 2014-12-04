@@ -1,0 +1,291 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Audit de base de donnée</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="http://code.highcharts.com/highcharts.js"></script>
+  <script src="http://code.highcharts.com/modules/exporting.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+  <style media="screen" type="text/css">
+    body {
+      background-color: #f0f0f0;
+    }
+
+    .box {
+      margin-top: 20px;
+      background-color: #fff;
+      padding: 5px;
+      border-radius: 2px;
+      box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.4);
+    }
+
+    .top-box {
+      height: 165px;
+    }
+
+    .box h4 {
+      padding-left: 30px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid black;
+    }
+
+    .sidebar {
+      position:fixed;
+      display: block;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      padding: 20px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background-color: #d5d5f5;
+      border-right: 1px solid #ccc;
+      /* box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.4); */
+      text-align: right;
+    }
+
+    .nav-sidebar {
+      margin-right: -21px;
+      margin-bottom: 20px;
+      margin-left: -20px;
+    }
+
+    .nav-sidebar>li>a {
+      padding-right: 40px;
+    }
+  </style>
+</head>
+<body>
+  <script>
+$(function () {
+    $('#line-charts-container').highcharts({
+        title: {
+            text: 'Pourcentage d\'élements NULL par table',
+            x: -20 //center
+        },
+        xAxis: {
+            categories: ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5',
+              'Table 6', 'Table 7']
+        },
+        yAxis: {
+            title: {
+                text: 'Elements NULL (%)'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: '%'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [
+          {
+              name: 'Instance 1',
+              data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2]
+          },
+          {
+              name: 'Instance 2',
+              data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8]
+          },
+          // {
+          //     name: '01/03/2014',
+          //     data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]
+          // },
+          // {
+          //     name: '01/04/2014',
+          //     data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+          // }
+        ]
+    });
+
+    $('#pie-charts-container').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: 1,//null,
+            plotShadow: false
+        },
+        title: {
+            text: 'Nombre d\'entrées dans les tables'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Nombre d\'entrées',
+            data: [
+                ['Table 1', 45.0],
+                ['Table 2', 26.8],
+                ['Table 3', 8.5],
+                ['Table 4', 6.2],
+                ['Table 5', 0.7]
+            ]
+        }]
+    });
+
+  var gaugeOptions = {
+
+        chart: {
+            type: 'solidgauge'
+        },
+
+        title: null,
+
+        pane: {
+            center: ['50%', '85%'],
+            size: '140%',
+            startAngle: -90,
+            endAngle: 90,
+            background: {
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                innerRadius: '60%',
+                outerRadius: '100%',
+                shape: 'arc'
+            }
+        },
+
+        tooltip: {
+            enabled: false
+        },
+
+        // the value axis
+        yAxis: {
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.5, '#DDDF0D'], // yellow
+                [0.9, '#DF5353'] // red
+            ],
+            lineWidth: 0,
+            minorTickInterval: null,
+            tickPixelInterval: 400,
+            tickWidth: 0,
+            title: {
+                y: -70
+            },
+            labels: {
+                y: 16
+            }
+        },
+
+        plotOptions: {
+            solidgauge: {
+                dataLabels: {
+                    y: 5,
+                    borderWidth: 0,
+                    useHTML: true
+                }
+            }
+        }
+    };
+});
+  </script>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2 sidebar">
+        <ul class="nav nav-sidebar">
+          <li class="active">
+            <a href="#">Vue générale</a>
+          </li>
+          <li>
+            <a href="#">Instance 1</a>
+          </li>
+          <li>
+            <a href="#">Instance 2</a>
+          </li>
+          <li>
+            <a href="#">Instance 3</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-offset-2 col-md-10">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="box top-box">
+              <h4>Base de données</h4>
+              <dl class="dl-horizontal">
+                <dt>Nature des données</dt>
+                <dd>Poney</dd>
+                <dt>Crypto</dt>
+                <dd>RSA</dd>
+                <dt>Nb. utilisateurs</dt>
+                <dd>42</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="box top-box">
+              <h4>Structure physique</h4>
+              <dl class="dl-horizontal">
+                <dt>Nb. datafiles</dt>
+                <dd>42</dd>
+                <dt>Nb. logfiles</dt>
+                <dd>42</dd>
+                <dt>Nb. ctrlfiles</dt>
+                <dd>42</dd>
+                <dt>Nb. redofiles</dt>
+                <dd>42</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="box top-box">
+              <h4>Structure logique</h4>
+              <dl class="dl-horizontal">
+                <dt>Nb. tables</dt>
+                <dd>42</dd>
+                <dt>Nb. tablespaces</dt>
+                <dd>42</dd>
+                <dt>Nb. segments</dt>
+                <dd>42</dd>
+                <dt>Nb. extents</dt>
+                <dd>42</dd>
+                <dt>Nb. blocs</dt>
+                <dd>42 / 1337 <em>(3.14 %)</em></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="box">
+              <div id="line-charts-container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="box">
+              <div id="pie-charts-container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>
