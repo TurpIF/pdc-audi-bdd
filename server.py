@@ -76,10 +76,20 @@ def index():
 def api_audits():
     res_audits = []
     for audit in audits:
-        for instance in filter(lambda x: x['idAudit'] == audit['id'], instances):
-            pass
+        ins = list(filter(lambda x: x['idAudit'] == audit['id'], instances))
+        res_audits.append({
+            'id': audit['id'],
+            'name': audit['nom'],
+            'date': audit['date'],
+            'nbInstances': len(ins),
+            'nbUtilisateurs': sum(map(lambda x: x['nbUtilisateurs'], ins)),
+            'nbDatafiles': sum(map(lambda x: x['nbDatafiles'], ins)),
+            'nbLogfiles': sum(map(lambda x: x['nbLogfiles'], ins)),
+            'nbCtrlfiles': sum(map(lambda x: x['nbCtrlfiles'], ins)),
+            'tailleSGA': sum(map(lambda x: x['tailleSGA'], ins)),
+        })
 
-    return jsonify(**{'results': [{'id': 1, 'date': '01/01/1970', 'name': 'audit'}], 'nbr': 1})
+    return jsonify(**{'results': res_audits, 'nbr': 1})
 
 @app.route('/api/audits/<int:id_audit>/instances/')
 def api_instances(id_audit):
