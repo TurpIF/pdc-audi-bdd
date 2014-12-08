@@ -24,6 +24,16 @@ angular.module('myApp', [
   $http.get('/api/audits/')
   .success(function(v) {
     $scope.audits = v.results;
+
+  //   for (var i in $scope.audits) {
+  //     var audit = $scope.audits[i];
+  //     series.add({
+  //       name: audit['name'],
+  //       data: []
+  //     });
+  //   }
+  //   var series = [{"name":"Audit 1","data":[3,1,null,5,2],"connectNulls":false,"id":"series-1"}];
+  //   $scope.config = {"options":{"chart":{"type":"column"},"plotOptions":{"series":{"stacking":""}}},"series": series,"title":{"text":"Nombre d'utilisateurs par audit"},"credits":{"enabled":false},"loading":false,"size":{},"subtitle":{"text":""}};
   });
   // $scope.audits = [{date: "01/01/1970", name: "coucou"}, {date: '02/02/1994', name: "nomarallongequifaitvraimenttropchier"}];
 
