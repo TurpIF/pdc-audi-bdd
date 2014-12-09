@@ -87,13 +87,19 @@ def api_audits():
             'nbLogfiles': sum(map(lambda x: x['nbLogfiles'], ins)),
             'nbCtrlfiles': sum(map(lambda x: x['nbCtrlfiles'], ins)),
             'tailleSGA': sum(map(lambda x: x['tailleSGA'], ins)),
+            'nbTablespaces': sum(map(lambda x: x['nbTablespaces'], ins)),
+            'nbSegments': sum(map(lambda x: x['nbSegments'], ins)),
+            'nbExtents': sum(map(lambda x: x['nbExtents'], ins)),
+            'nbBlocs': sum(map(lambda x: x['nbBlocs'], ins)),
+            'tailleBlocs': sum(map(lambda x: x['tailleBlocs'], ins)),
+            'nbVues': sum(map(lambda x: x['nbVues'], ins))
         })
 
     return jsonify(**{'results': res_audits, 'nbr': 1})
 
 @app.route('/api/audits/<int:id_audit>/instances/')
 def api_instances(id_audit):
-    return jsonify(**{'results': [{'id': 1, 'name': 'instance'}], 'nbr': 1})
+    return jsonify(**{'results': [{'id': 1}], 'nbr': 1})
 
 @app.route('/api/audits/<int:id_audit>/instances/<int:id_instance>/servers/')
 def api_servers(id_audit, id_instance):
