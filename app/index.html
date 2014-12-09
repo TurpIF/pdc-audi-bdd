@@ -15,12 +15,29 @@
   <!-- <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap&#45;theme.min.css"> -->
   <link rel="stylesheet" href="app.css">
   <!-- <script src="bower_components/html5&#45;boilerplate/js/vendor/modernizr&#45;2.6.2.min.js"></script> -->
+
+  <style media="screen" type="text/css">
+    .box {
+      margin-top: 20px;
+      background-color: #fff;
+      padding: 5px;
+      border-radius: 2px;
+      box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.3);
+    }
+  </style>
 </head>
 <body>
   <div ng-view>
     <div ng-controller="MyCtrl">
       <div class="crumbs">
         <ul>
+          <li>
+            <span class="crumb">
+              <a href ng-click="selectAudit(undefined)">
+                <i class="glyphicon glyphicon-chevron-up" style="top: -3px"></i>
+              </a>
+            </span>
+          </li>
           <li>
             <span class="crumb">
               <span class="dropdown" dropdown>
@@ -42,12 +59,12 @@
               <span class="dropdown" dropdown>
                 <a href="" class="dropdown-toggle" dropdown-toggle>
                   <span ng-if="cur_instance === undefined">Instance</span>
-                  <span ng-if="cur_instance !== undefined">{{ cur_instance.name }}</span>
+                  <span ng-if="cur_instance !== undefined">Instance {{ cur_instance.id }}</span>
                   <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                   <li ng-repeat="instance in instances">
-                    <a ng-if="instance != cur_instance" ng-click="selectInstance(instance)" href>{{instance.name}}</a>
+                    <a ng-if="instance != cur_instance" ng-click="selectInstance(instance)" href>Instance {{instance.id}}</a>
                   </li>
                 </ul>
               </span>
@@ -90,6 +107,34 @@
           </em>
         </ul>
       </div>
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="box">
+              <div id="chart-physical-structure" style="height: 400px; margin: 0 auto"></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="box">
+              <div id="chart-logical-structure" style="height: 400px; margin: 0 auto"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="box">
+              <div id="chart-scheme-quality" style="height: 400px; margin: 0 auto"></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="box">
+              <div id="chart-data-quality" style="height: 400px; margin: 0 auto"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -97,12 +142,12 @@
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
   -->
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="http://code.highcharts.com/highcharts.js"></script>
+  <script src="http://code.highcharts.com/modules/exporting.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-resource/angular-resource.min.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="bower_components/highcharts-release/highcharts-all.js"></script>
-  <script src="bower_components/highcharts-ng/dist/highcharts-ng.min.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
   <script src="app.js"></script>

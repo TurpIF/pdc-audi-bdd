@@ -3,7 +3,6 @@
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
     'ngResource',
-    'highcharts-ng',
     'ui.bootstrap'
 ])
 .controller('MyCtrl', ['$scope', '$http',
@@ -24,16 +23,6 @@ angular.module('myApp', [
   $http.get('/api/audits/')
   .success(function(v) {
     $scope.audits = v.results;
-
-  //   for (var i in $scope.audits) {
-  //     var audit = $scope.audits[i];
-  //     series.add({
-  //       name: audit['name'],
-  //       data: []
-  //     });
-  //   }
-  //   var series = [{"name":"Audit 1","data":[3,1,null,5,2],"connectNulls":false,"id":"series-1"}];
-  //   $scope.config = {"options":{"chart":{"type":"column"},"plotOptions":{"series":{"stacking":""}}},"series": series,"title":{"text":"Nombre d'utilisateurs par audit"},"credits":{"enabled":false},"loading":false,"size":{},"subtitle":{"text":""}};
   });
   // $scope.audits = [{date: "01/01/1970", name: "coucou"}, {date: '02/02/1994', name: "nomarallongequifaitvraimenttropchier"}];
 
@@ -83,6 +72,137 @@ angular.module('myApp', [
         $scope.columns = v.results;
       });
     }
+  });
+
+  $scope.$watch('audits', function(newV) {
+    var names = [];
+    var ctrlfilesSerie = {name: 'Nb. Ctrl. Files', data: []};
+    var logfilesSerie = {name: 'Nb. Log Files', data: []};
+    var datafilesSerie = {name: 'Nb. Data Files', data: []};
+    var tailleSGASerie = {name: 'Taille de la SGA (Mo)', data: []};
+    var nbVuesSerie = {name: 'Vues / Tables (%)', data: []};
+    var nbIndexSerie = {name: 'Index / Tables (%)', data: []};
+    var nbAttributsSerie = {name: 'Attributs / Tables', data: []};
+    var nbTablespacesSerie = {name: 'Nb. tablespaces', data: []};
+    var nbSegmentsSerie = {name: 'Nb. segments', data: []};
+    var nbExtentsSerie = {name: 'Nb. extents', data: []};
+    var nbBlocsSerie = {name: 'Nb. blocs', data: []};
+    var tailleBlocsSerie = {name: 'Taille des blocs', data: []};
+    var nbTablesSerie = {name: 'Nb. tables', data: []};
+    var nbPKSerie = {name: 'Clés primaires / Tables (%)', data: []};
+    var nbFKSerie = {name: 'Clés étrangères / Tables (%)', data: []};
+    var avgNbEntriesSerie = {name: 'Nb. moyen d\'entrées', data: []};
+    var avgNbColumnSeries = {name: 'Nb. moyen de colonnes', data: []};
+    var nbValeursDiffSeries = {name: 'Taux de valeurs diff. (%)', data: []};
+    var nbValNullSeries = {name: 'Taux de valeurs NULL (%)', data: []};
+    var largeurChampsSeries = {name: 'Largeur moyen des champs', data: []};
+
+    // TODO répartition des types
+    // TODO répartition des types non normalisés
+
+    for (var i in $scope.audits) {
+      var audit = $scope.audits[i];
+      names.push(audit.name);
+      console.log(audit);
+      ctrlfilesSerie.data.push(audit.nbCtrlfiles);
+      logfilesSerie.data.push(audit.nbLogfiles);
+      datafilesSerie.data.push(audit.nbDatafiles);
+      tailleSGASerie.data.push(((audit.tailleSGA / 1024.0 * 10) | 0) / 10);
+      nbTablespacesSerie.data.push(audit.nbTablespaces);
+      nbSegmentsSerie.data.push(audit.nbSegments);
+      nbExtentsSerie.data.push(audit.nbExtents);
+      nbBlocsSerie.data.push(audit.nbBlocs);
+      // nbVuesSerie.data.push(audit.nbVues);
+      tailleBlocsSerie.data.push(((audit.tailleBlocs / 1024.0 * 10) | 0) / 10);
+    }
+
+    var physicalSeries = [
+      ctrlfilesSerie,
+      logfilesSerie,
+      datafilesSerie,
+      tailleSGASerie
+    ];
+
+    var logicalSeries = [
+      nbVuesSerie,
+      nbIndexSerie,
+      nbAttributsSerie,
+      nbTablespacesSerie,
+      nbSegmentsSerie,
+      nbExtentsSerie,
+      nbBlocsSerie,
+      tailleBlocsSerie
+    ];
+
+    var schemeQualitySeries = [
+      nbTablesSerie,
+      nbPKSerie,
+      nbFKSerie,
+      avgNbEntriesSerie,
+      avgNbColumnSeries
+    ];
+
+    var dataQualitySeries = [
+      nbValeursDiffSeries,
+      nbValNullSeries,
+      largeurChampsSeries
+    ];
+
+    $('#chart-physical-structure').highcharts({
+        chart: { type: 'column' },
+        title: { text: 'Structure physique', x: -20 },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        xAxis: { categories: names },
+        // yAxis: { title: { text: 'Nombre de fichiers' }, },
+        series: physicalSeries
+    });
+
+    $('#chart-logical-structure').highcharts({
+        chart: { type: 'column' },
+        title: { text: 'Structure logique', x: -20 },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        xAxis: { categories: names },
+        // yAxis: { title: { text: 'Nombre de fichiers' }, },
+        series: logicalSeries
+    });
+
+    $('#chart-scheme-quality').highcharts({
+        chart: { type: 'column' },
+        title: { text: 'Qualité des schémas', x: -20 },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        xAxis: { categories: names },
+        // yAxis: { title: { text: 'Nombre de fichiers' }, },
+        series: schemeQualitySeries
+    });
+
+    $('#chart-data-quality').highcharts({
+        chart: { type: 'column' },
+        title: { text: 'Qualité des données', x: -20 },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        xAxis: { categories: names },
+        // yAxis: { title: { text: 'Nombre de fichiers' }, },
+        series: dataQualitySeries
+    });
   });
 
   $scope.selectAudit = function(sel) {
