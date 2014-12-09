@@ -1,10 +1,9 @@
 -- Groupement par audit
 SELECT
-COUNT(audit.id) AS nbAudit,
-COUNT(instance.id) AS nbInstance,
-COUNT(serveur.id) AS nbServeur,
-COUNT(vtable.id) AS nbTable,
-COUNT(colonne.nom + colonne.idTable) AS nbColonne,
+COUNT(DISTINCT instance.id) AS nbInstance,
+COUNT(DISTINCT serveur.id) AS nbServeur,
+COUNT(DISTINCT vtable.id) AS nbTable,
+COUNT(DISTINCT colonne.nom + colonne.idTable) AS nbColonne,
 audit.nom AS name,
 audit.date AS date,
 SUM(instance.nbUtilisateurs) AS nbUtilisateurs,
@@ -40,10 +39,9 @@ GROUP BY audit.id;
 
 -- Groupement par instance d'un audit
 SELECT
-COUNT(instance.id) AS nbInstance,
-COUNT(serveur.id) AS nbServeur,
-COUNT(vtable.id) AS nbTable,
-COUNT(colonne.nom + colonne.idTable) AS nbColonne,
+COUNT(DISTINCT serveur.id) AS nbServeur,
+COUNT(DISTINCT vtable.id) AS nbTable,
+COUNT(DISTINCT colonne.nom + colonne.idTable) AS nbColonne,
 audit.nom AS name,
 audit.date AS date,
 SUM(instance.nbUtilisateurs) AS nbUtilisateurs,
@@ -80,8 +78,7 @@ GROUP BY instance.id;
 
 -- Groupement par tables d'une instance
 SELECT
-COUNT(vtable.id) AS nbTable,
-COUNT(colonne.nom + colonne.idTable) AS nbColonne,
+COUNT(DISTINCT colonne.nom + colonne.idTable) AS nbColonne,
 instance.nbUtilisateurs AS nbUtilisateurs,
 instance.nbDatafiles AS nbDatafiles,
 instance.nbCtrlFiles AS nbCtrlfiles,
@@ -114,7 +111,6 @@ GROUP BY vtable.id;
 
 -- Groupement par colonnes d'une table
 SELECT
-COUNT(*) AS nbColonne,
 table_.nbIndex AS nbIndex,
 table_.hasPK_ AS hasPK,
 table_.nbFK AS nbFK,
